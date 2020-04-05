@@ -36,8 +36,23 @@ module.exports = function (app) {
   
     .get(function (req, res){
       var project = req.params.project;
-      
+    var createAndSaveIssue = function(done){
+      var issue=new Issue({
+  issue_title: project.issue_title,
+  issue_text: project.issue_text,
+  created_on: project.created_on,
+  updated_on: project.updated_on,
+  created_by: project.created_by,
+  assigned_to: project.assigned_to,
+  open: project.open,
+  status_text: project.status_text
     })
+    issue.save(function(err, data) {
+    if(err) return done(err);
+    done(null,data);
+  });
+    }})
+
     
     .post(function (req, res){
       var project = req.params.project;

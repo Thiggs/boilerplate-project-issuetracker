@@ -36,8 +36,11 @@ module.exports = function (app) {
   
     .get(function (req, res){
       var project = req.params.project;
- 
-    })
+     var query = req.query
+     console.log(db.project)
+     var collection = 
+    db.Issue.find(query)
+  })
     
     .post(function (req, res){
       var project = req.params.project;

@@ -23,9 +23,9 @@ var issueSchema = new Schema({
   created_on: Date,
   updated_on: Date,
   created_by: { type: String, required: true },
-  assigned_to: String,
+  assigned_to: { type: String, default: "" },
   open: { type: Boolean, default: true },
-  status_text: String
+  status_text: { type: String, default: "open"}
 });
 
 var Issue = mongoose.model("Issue", issueSchema);
@@ -100,11 +100,12 @@ module.exports = function (app) {
     
     .delete(function (req, res){
       var project = req.params.project;
-    Issue.findByIdAndRemove({_id: project._id}, function(err, data){ 
-      if (!data){res.send('id error')}
-      if(err) res.send("could not delete "+project._id);
-       res.send(null, 'deleted '+data._id);
+      if (!req.query._id){res.send('_id error')}
+    else{Issue.findByIdAndRemove({_id: req.query._id}, function(err, data){ 
+      if(err) res.send("could not delete "+req.query._id);
+       else res.send('deleted '+req.query._id);
     });
+    }
     });
     
 };

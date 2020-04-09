@@ -192,13 +192,24 @@ suite('Functional Tests', function() {
     suite('DELETE /api/issues/{project} => text', function() {
       
       test('No _id', function(done) {
-        
+        chai.request(server)
+        .delete('/api/issues/test')
+        .query({})
+        .end(function(err, res){
+                  assert.equal(res.status, 200);
+                  assert.equal(res.text, '_id error')
+                  done();
+      });
       });
       
       test('Valid _id', function(done) {
-        
+        chai.request(server)
+        .delete('/api/issues/test?_id=5e8e8e7ae9858d30e8b7d3c2')
+        .end(function(err, res){
+                  assert.equal(res.status, 200);
+                  assert.equal(res.text, 'deleted 5e8e8e7ae9858d30e8b7d3c2')
+                  done();
       });
-      
-    });
-
+      });
+  });
 });

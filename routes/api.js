@@ -37,9 +37,12 @@ module.exports = function (app) {
     .get(function (req, res){
       var project = req.params.project;
      var query = req.query
-     console.log(db.project)
      var collection = 
-    db.Issue.find(query)
+    Issue.find(query, function(err, data){ 
+      if (!data){res.send('id error')}
+      if(err) res.send("no data found that matches params");
+       res.send(data);
+    });
   })
     
     .post(function (req, res){

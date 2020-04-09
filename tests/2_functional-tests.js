@@ -23,62 +23,61 @@ suite('Functional Tests', function() {
         .send({
           issue_title: 'Title',
           issue_text: 'text',
-          created_by: 'Functional Test - Every field filled in',
+          created_by: 'name',
           assigned_to: 'Chai and Mocha',
+                   open: true,
           status_text: 'In QA'
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.equal(res.body,  {
+          assert.include(res.body, {
           issue_title: 'Title',
           issue_text: 'text',
-          created_by: 'Functional Test - Every field filled in',
+          created_by: 'name',
           assigned_to: 'Chai and Mocha',
+          open: true,
           status_text: 'In QA'
-          })
+        })
           done();
+                }) 
         });
-      });
       
       test('Required fields filled in', function(done) {
-         chai.request(server)
+       chai.request(server)
         .post('/api/issues/test')
         .send({
           issue_title: 'Title',
           issue_text: 'text',
-          created_by: 'Functional Test - Every field filled in',
-          assigned_to: 'Chai and Mocha',
-          status_text: 'In QA'
+          created_by: 'name'
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.equal(res.body,  {
+          assert.include(res.body, {
           issue_title: 'Title',
           issue_text: 'text',
-          created_by: 'Functional Test - Every field filled in',
-          assigned_to: 'Chai and Mocha',
-          status_text: 'In QA'
-          })
+          created_by: 'name',
+        })        
           done();
-        });      
-      });
+                }) 
+        });
       
       test('Missing required fields', function(done) {
-        chai.request(server)
+       chai.request(server)
         .post('/api/issues/test')
         .send({
-          issue_title: '',
+          issue_title: 'Title',
           issue_text: 'text',
-          created_by: 'Functional Test - Every field filled in',
-          assigned_to: 'Chai and Mocha',
-          status_text: 'In QA'
+          created_by: ''
         })
-        .end(function(err, res){  
-        assert.equal(res.status, 200);
-        assert.equal(res.body, "please fill out required fields")
-      });
+        .end(function(err, res){
+          assert.equal(res.status, 200);
+          assert.equal("please fill out required fields")
+       })         
+          done();
+        });
+      
     });
-    });
+    
     suite('PUT /api/issues/{project} => text', function() {
       
       test('No body', function(done) {

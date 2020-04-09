@@ -28,7 +28,7 @@ var issueSchema = new Schema({
   status_text: String
 });
 
-var Issue = mongoose.model("Person", issueSchema);
+var Issue = mongoose.model("Issue", issueSchema);
 
 module.exports = function (app) {
 
@@ -36,64 +36,52 @@ module.exports = function (app) {
   
     .get(function (req, res){
       var project = req.params.project;
-    if(!project.issue_title||!project.issue_text||!project.create_by){
-      return "please fill out required fields"
-    }
-    
-    var createAndSaveIssue = function(done){
-      var issue=new Issue({
-  issue_title: project.issue_title,
-  issue_text: project.issue_text,
-  created_on: Date.now(),
-  updated_on: Date.now(),
-  created_by: project.created_by,
-  assigned_to: project.assigned_to,
-  open: project.open,
-  status_text: project.status_text
+ 
     })
-    issue.save(function(err, data) {
-    if(err) return done(err);
-    done(null,data);
-  });
-    }})
     
     .post(function (req, res){
       var project = req.params.project;
-      var result ={
-      "_id": project._id,
-      "issue_title": project.issue_title,
-      "issue_text": project.issue_text,
-      "created_on": project.created_on,
-      "updated_on": project.updated_on,
-      "created_by": project.created_by,
-      "assigned_to": project.assigned_to,
-      "open": project.open,
-      "status_text": project.status_text}
-      res.json(result);
+       if(!req.body.issue_title||!req.body.issue_text||!req.body.created_by){
+      res.send("please fill out required fields")
+    }
+    else{
+      var issue=new Issue({
+  issue_title: req.body.issue_title,
+  issue_text: req.body.issue_text,
+  created_on: Date.now(),
+  updated_on: Date.now(),
+  created_by: req.body.created_by,
+  assigned_to: req.body.assigned_to,
+  open: req.body.open,
+  status_text: req.body.status_text
     })
+  issue.save;
+    res.send(issue);
+  }
+  })
     
     .put(function (req, res){
       var project = req.params.project;
       if(!project){res.send('no updated field sent')}
       Issue.findOneAndUpdate({_id: project._id}, {new: true}, function(err, data){
       if(err){res.send('could not update '+project._id)}
-      if(project.issue_title){
-        data.issue_title=project.issue_title;
+      if(req.query.issue_title){
+        data.issue_title=req.query.issue_title;
       }
-      if(project.issue_text){
-        data.issue_text=project.issue_text
+      if(req.query.issue_text){
+        data.issue_text=req.query.issue_text
       }
-      if(project.created_by){
-        data.created_by=project.created_by;
+      if(req.query.created_by){
+        data.created_by=req.query.created_by;
       }
-      if(project.assigned_to){
-        data.assigned_to=project.assigned_to;
+      if(req.query.assigned_to){
+        data.assigned_to=req.query.assigned_to;
       }
       if(project.open){
-        data.open=project.open;
+        data.open=req.query.open;
       }
       if(project.status_text){
-        data.status_text=project.status_text;
+        data.status_text=req.query.status_text;
       }
       data.update_date=Date.now();
       data.save();

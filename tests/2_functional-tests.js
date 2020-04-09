@@ -71,9 +71,9 @@ suite('Functional Tests', function() {
         })
         .end(function(err, res){
           assert.equal(res.status, 200);
-          assert.equal("please fill out required fields")
-       })         
+          assert.equal(res.text, "please fill out required fields")        
           done();
+                }) 
         });
       
     });
@@ -81,15 +81,42 @@ suite('Functional Tests', function() {
     suite('PUT /api/issues/{project} => text', function() {
       
       test('No body', function(done) {
-        
+               chai.request(server)
+        .put('/api/issues/test')
+        .send({
+              _id : "5e8e8e89aac60f31462a2957"})
+        .end(function(err, res){
+          assert.equal(res.status, 200);
+        assert.equal(res.text, 'no updated field sent')
+                 done();
+      });
       });
       
       test('One field to update', function(done) {
-        
+              chai.request(server)
+        .put('/api/issues/test')
+        .send({
+               _id: "5e8e8e89aac60f31462a2957",
+              issue_title: "New Title"})
+        .end(function(err, res){
+          assert.equal(res.status, 200);
+        assert.equal(res.text, 'successfully updated')
+                 done();
+      });
       });
       
       test('Multiple fields to update', function(done) {
-        
+          chai.request(server)
+        .put('/api/issues/test')
+        .send({
+               _id: "5e8e8e89aac60f31462a2957",
+              issue_title: "New Title",
+              issue_text: "New Text"})
+        .end(function(err, res){
+          assert.equal(res.status, 200);
+        assert.equal(res.text, 'successfully updated')
+                 done();
+      });
       });
       
     });

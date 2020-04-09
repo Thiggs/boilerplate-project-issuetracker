@@ -62,31 +62,34 @@ module.exports = function (app) {
     
     .put(function (req, res){
       var project = req.params.project;
-      if(!project){res.send('no updated field sent')}
-      Issue.findOneAndUpdate({_id: project._id}, {new: true}, function(err, data){
-      if(err){res.send('could not update '+project._id)}
-      if(req.query.issue_title){
-        data.issue_title=req.query.issue_title;
+      if(!req.body||!(req.body.issue_title||req.body.issue_text||req.body.created_by||req.body.assigned_to||req.body.open||req.body.status_text)){
+        res.send('no updated field sent')}
+    else{
+      Issue.findOneAndUpdate({_id: req.body._id}, {new: true}, function(err, data){
+      if(err){res.send('could not update '+req.body._id)}
+      if(req.body.issue_title){
+        data.issue_title=req.body.issue_title;
       }
-      if(req.query.issue_text){
-        data.issue_text=req.query.issue_text
+      if(req.body.issue_text){
+        data.issue_text=req.body.issue_text
       }
-      if(req.query.created_by){
-        data.created_by=req.query.created_by;
+      if(req.body.created_by){
+        data.created_by=req.body.created_by;
       }
-      if(req.query.assigned_to){
-        data.assigned_to=req.query.assigned_to;
+      if(req.body.assigned_to){
+        data.assigned_to=req.body.assigned_to;
       }
-      if(project.open){
-        data.open=req.query.open;
+      if(req.body.open){
+        data.open=req.body.open;
       }
-      if(project.status_text){
-        data.status_text=req.query.status_text;
+      if(req.body.status_text){
+        data.status_text=req.body.status_text;
       }
       data.update_date=Date.now();
       data.save();
       res.send('successfully updated')
     });
+    }
     })
     
     .delete(function (req, res){
